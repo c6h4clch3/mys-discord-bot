@@ -1,5 +1,7 @@
 import discord
 import re
+import datetime
+from parseMessage import parseMessage
 
 client = discord.Client()
 
@@ -15,6 +17,11 @@ async def on_message(message: discord.Message):
         return
     if not message.clean_content.startswith('/multi'):
         return
+
+    parsed = parseMessage(message.clean_content)
+    title = parsed[0]
+    datetimes = parsed[1]
+    description = parsed[2]
 
 
 def validateMessageAsMultiBattleRequest(message: str) -> bool:
@@ -45,9 +52,3 @@ def validateDateTimeOrEmpty(text: str) -> bool:
 
     return res
 
-
-with open('./example.txt') as f:
-    message = f.read()
-    print(message)
-    s = validateMessageAsMultiBattleRequest(message)
-    print(s)
