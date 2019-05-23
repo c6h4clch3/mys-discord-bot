@@ -5,15 +5,30 @@ from parseMessage import parseMessage
 
 client = discord.Client()
 
+TOKEN = ''
+with open('discord_token') as f:
+    TOKEN = f.read()
 
-@client.event
-async def on_ready():
-    print('ログインしました')
+print(TOKEN)
 
 
 @client.event
 async def on_message(message: discord.Message):
     if message.author.bot:
+        return
+
+    await test(message)
+
+
+async def test(message: discord.Message):
+    if str(message.channel) != 'general':
+        return
+    if not message.clean_content.startswith('/test'):
+        return
+    await message.channel.send('テストだからってよ......止まるんじゃ、ねぇぞ.....')
+
+async def registerMulti(message: discord.Message):
+    if str(message.channel) != '共闘マルチ募集':
         return
     if not message.clean_content.startswith('/multi'):
         return
@@ -22,7 +37,6 @@ async def on_message(message: discord.Message):
     title = parsed[0]
     datetimes = parsed[1]
     description = parsed[2]
-
 
 def validateMessageAsMultiBattleRequest(message: str) -> bool:
     splitted = message.splitlines()
@@ -52,3 +66,5 @@ def validateDateTimeOrEmpty(text: str) -> bool:
 
     return res
 
+
+client.run(TOKEN)

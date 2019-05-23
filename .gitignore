@@ -1,2 +1,3 @@
 credentials.json
-___pycache__
+__pycache__
+discord_token
