@@ -3,8 +3,10 @@ import re
 
 
 def readTime(times: tuple):
-    result = []
-    for _idx, item in enumerate(times):
+    result = [None, None]
+    for idx, item in enumerate(times):
+        if idx > 2:
+            break
         now = datetime.datetime.now()
         searched = re.search(r'(\d{1,2})/(\d{1,2})', item)
         monthStr = searched.groups()[0]
