@@ -19,10 +19,13 @@ async def on_message(message: discord.Message):
     if message.author.bot:
         return
 
-    await test(message)
-    await ryakuto(message)
-    await ping(message)
-    await registerMulti(message)
+    try:
+        await test(message)
+        await ryakuto(message)
+        await ping(message)
+        await registerMulti(message)
+    except Exception:
+        await message.channel.send('悪ぃな、なんだか途中でエラーを起こしちまったみてぇだ。\nもう一度メッセージを確認してくれ。')
 
 
 async def test(message: discord.Message):
@@ -44,6 +47,7 @@ async def registerMulti(message: discord.Message):
     datetimes = parsed[1]
     description = parsed[2]
     addCalendar(title, datetimes, description)
+    await message.channel.send('団のカレンダーに載せといたからな、忘れないようにしろよ、ミカ。')
 
 
 async def ryakuto(message: discord.Message):
@@ -63,6 +67,7 @@ async def ping(message: discord.Message):
         return
 
     await message.channel.send('PON☆')
+
 
 def validateMessageAsMultiBattleRequest(message: str) -> bool:
     splitted = message.splitlines()

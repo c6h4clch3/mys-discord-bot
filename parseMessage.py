@@ -17,7 +17,7 @@ def readTime(times: tuple):
         if (now.month > month or (now.month == month and now.day > date)):
             year += 1
         result[idx] = (datetime.datetime.strptime(
-            str(year) + '/' + item, '%Y/%m/%d %H:%M').astimezone(datetime.timezone(datetime.timedelta(hours=9))))
+            str(year) + '/' + item + '+09:00', '%Y/%m/%d %H:%M%z'))
 
     if (result[1] == None):
         start = result[0]
@@ -30,8 +30,7 @@ def parseMessage(message: str):
     splittedMessage.pop(0)
     title: str = splittedMessage.pop(0)
     timesList: [str] = splittedMessage.pop(0).split(' ~ ')
-    times = (timesList[0], timesList[1])
-    times = readTime(times)
+    times = readTime(timesList)
     description = ''
     for _idx, item in enumerate(splittedMessage):
         description += item + '\n'
