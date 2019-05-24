@@ -1,6 +1,7 @@
 import discord
 import re
 import datetime
+import random
 from parseMessage import parseMessage
 
 client = discord.Client()
@@ -18,6 +19,8 @@ async def on_message(message: discord.Message):
         return
 
     await test(message)
+    await ryakuto(message)
+    await ping(message)
 
 
 async def test(message: discord.Message):
@@ -26,6 +29,7 @@ async def test(message: discord.Message):
     if not message.clean_content.startswith('/test'):
         return
     await message.channel.send('テストだからってよ......止まるんじゃ、ねぇぞ.....')
+
 
 async def registerMulti(message: discord.Message):
     if str(message.channel) != '共闘マルチ募集':
@@ -37,6 +41,25 @@ async def registerMulti(message: discord.Message):
     title = parsed[0]
     datetimes = parsed[1]
     description = parsed[2]
+
+
+async def ryakuto(message: discord.Message):
+    if not message.clean_content.startswith('/ryakuto'):
+        return
+
+    lines = []
+    with open('./dancho_goroku.txt') as f:
+        lines = f.read().splitlines()
+
+    index = random.randint(0, len(lines) - 1)
+    await message.channel.send(lines[index])
+
+
+async def ping(message: discord.Message):
+    if not message.clean_content.startswith('/ping'):
+        return
+
+    await message.channel.send('PON☆')
 
 def validateMessageAsMultiBattleRequest(message: str) -> bool:
     splitted = message.splitlines()
