@@ -1,3 +1,4 @@
 credentials.json
 __pycache__
 discord_token
+token.pickle
