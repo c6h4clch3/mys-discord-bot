@@ -16,8 +16,12 @@ def readTime(times: tuple):
         year = now.year
         if (now.month > month or (now.month == month and now.day > date)):
             year += 1
-        result.append(datetime.datetime.strptime(str(year) + '/' + item, '%Y/%m/%d %H:%M'))
+        result[idx] = (datetime.datetime.strptime(
+            str(year) + '/' + item, '%Y/%m/%d %H:%M').astimezone(datetime.timezone(datetime.timedelta(hours=9))))
 
+    if (result[1] == None):
+        start = result[0]
+        result[1] = start + datetime.timedelta(hours=1)
     return tuple(result)
 
 
@@ -33,4 +37,3 @@ def parseMessage(message: str):
         description += item + '\n'
 
     return (title, times, description)
-

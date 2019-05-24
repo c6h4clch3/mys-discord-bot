@@ -3,16 +3,20 @@ import datetime
 import pickle
 import os.path
 from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
+from google_auth_oauthlib.flow import Flow
+from google.oauth2.service_account import Credentials
 from google.auth.transport.requests import Request
 
 # If modifying these scopes, delete the file token.pickle.
-SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+SCOPES = [
+    'https://www.googleapis.com/auth/calendar',
+]
+CALENDAR_ID = ''
+with open('./calendar_id') as f:
+    CALENDAR_ID = f.read()
 
-def main():
-    """Shows basic usage of the Google Calendar API.
-    Prints the start and name of the next 10 events on the user's calendar.
-    """
+
+def addCalendar(title, times, description):
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -25,29 +29,27 @@ def main():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
-            creds = flow.run_local_server()
+            creds = Credentials.from_service_account_file('./svc.json').with_scopes(SCOPES)
         # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:
             pickle.dump(creds, token)
 
     service = build('calendar', 'v3', credentials=creds)
 
+    event = {
+        "start": {"dateTime": times[0].isoformat()},
+        "end": {"dateTime": times[1].isoformat()},
+        "summary": title,
+        "description": description,
+        "transparency": "transparent",
+        "reminders": {
+            "useDefault": False,
+            "overrides": []  # 通知を無効にするにはこのようにする
+        }
+    }
+
     # Call the Calendar API
-    now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-    print('Getting the upcoming 10 events')
     # pylint: disable=E1101
-    events_result = service.events().list(calendarId='primary', timeMin=now,
-                                        maxResults=10, singleEvents=True,
-                                        orderBy='startTime').execute()
-    events = events_result.get('items', [])
+    service.events().insert(calendarId=CALENDAR_ID,
+                            body=event).execute()
 
-    if not events:
-        print('No upcoming events found.')
-    for event in events:
-        start = event['start'].get('dateTime', event['start'].get('date'))
-        print(start, event['summary'])
-
-if __name__ == '__main__':
-    main()

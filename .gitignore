@@ -1,4 +1,7 @@
 credentials.json
+svc.json
 __pycache__
 discord_token
 token.pickle
+calendar_id
+lib

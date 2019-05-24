@@ -3,6 +3,7 @@ import re
 import datetime
 import random
 from parseMessage import parseMessage
+from registerGoogleCalendar import addCalendar
 
 client = discord.Client()
 
@@ -21,6 +22,7 @@ async def on_message(message: discord.Message):
     await test(message)
     await ryakuto(message)
     await ping(message)
+    await registerMulti(message)
 
 
 async def test(message: discord.Message):
@@ -41,6 +43,7 @@ async def registerMulti(message: discord.Message):
     title = parsed[0]
     datetimes = parsed[1]
     description = parsed[2]
+    addCalendar(title, datetimes, description)
 
 
 async def ryakuto(message: discord.Message):
