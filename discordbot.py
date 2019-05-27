@@ -66,7 +66,6 @@ async def ryakuto(message: discord.Message):
 
     linesLength = len(lines)
     if 1 <= indexNum <= linesLength:
-        await message.channel.send('ん？その指定はまずってねぇか？')
         index = indexNum - 1
     else:
         index = random.randint(0, linesLength - 1)
