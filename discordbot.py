@@ -24,7 +24,8 @@ async def on_message(message: discord.Message):
         await ryakuto(message)
         await ping(message)
         await registerMulti(message)
-    except Exception:
+    except Exception as e:
+        print(e)
         await message.channel.send('悪ぃな、なんだか途中でエラーを起こしちまったみてぇだ。\nもう一度メッセージを確認してくれ。')
 
 
@@ -54,11 +55,22 @@ async def ryakuto(message: discord.Message):
     if not message.clean_content.startswith('/ryakuto'):
         return
 
+    searched = re.search(r'\/ryakuto\s(\d+)', message.clean_content)
+    indexNum = 0
+    if searched:
+        indexNum = int(searched.groups()[0])
+
     lines = []
     with open('./dancho_goroku.txt') as f:
         lines = f.read().splitlines()
 
-    index = random.randint(0, len(lines) - 1)
+    linesLength = len(lines)
+    if 1 <= indexNum <= linesLength:
+        await message.channel.send('ん？その指定はまずってねぇか？')
+        index = indexNum - 1
+    else:
+        index = random.randint(0, linesLength - 1)
+
     await message.channel.send(lines[index])
 
 
